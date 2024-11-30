@@ -7,8 +7,10 @@ interface ShortenedFormProps {
 }
 const ShortenForm = ({ handleUrlShortened }: ShortenedFormProps) => {
   const [url, setUrl] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       const response = await fetch('/api/shorten', {
         method: 'POST',
@@ -23,6 +25,9 @@ const ShortenForm = ({ handleUrlShortened }: ShortenedFormProps) => {
       handleUrlShortened();
     } catch (error) {
       console.error('Error shortening url: ', error);
+      setIsLoading(false);
+    } finally {
+      setIsLoading(false);
     }
   };
   return (
@@ -36,7 +41,9 @@ const ShortenForm = ({ handleUrlShortened }: ShortenedFormProps) => {
           placeholder='Enter URL to shorten'
           required
         />
-        <Button className='w-full p-2'>Shorten Url</Button>
+        <Button disabled={isLoading} className='w-full p-2'>
+          {isLoading ? 'Shortening URL processing' : 'Shorten URL'}
+        </Button>
       </div>
     </form>
   );
