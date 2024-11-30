@@ -1,12 +1,18 @@
-import React from 'react';
+'use client';
+import React, { useState } from 'react';
 import ShortenForm from './ShortenForm';
 import UrlList from './UrlList';
 
 const UrlShortenerContainer = () => {
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const handleUrlShortened = () => {
+    setRefreshKey((prevKey) => prevKey + 1);
+  };
   return (
     <div>
-      <ShortenForm />
-      <UrlList />
+      <ShortenForm handleUrlShortened={handleUrlShortened} />
+      <UrlList key={refreshKey} />
     </div>
   );
 };

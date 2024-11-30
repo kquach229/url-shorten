@@ -2,12 +2,28 @@
 import React, { useState } from 'react';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
-
-const ShortenForm = () => {
+interface ShortenedFormProps {
+  handleUrlShortened: () => void;
+}
+const ShortenForm = ({ handleUrlShortened }: ShortenedFormProps) => {
   const [url, setUrl] = useState('');
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(url);
+    try {
+      const response = await fetch('/api/shorten', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ url }),
+      });
+
+      await response.json();
+      setUrl('');
+      handleUrlShortened();
+    } catch (error) {
+      console.error('Error shortening url: ', error);
+    }
   };
   return (
     <form onSubmit={handleSubmit} className='mb-4'>
